@@ -1,50 +1,49 @@
 <template>
+  <div class="flex">
     <v-card
-        class="mx-auto"
-        max-width="800px"
+        :title="authorName"
+        :subtitle="authorStatus"
+        class="w-full"
+        elevation="24"
     >
-        <v-img
-            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-            cover
-        ></v-img>
+      <template v-slot:prepend>
+        <v-avatar
+            color="surface-variant"
+            :image="authorAvatarUrl"
+        ></v-avatar>
+      </template>
 
-        <v-card-title>
-            Top western road trips
-        </v-card-title>
+      <v-card-text class="text-h5 py-2">
+        {{ content }}
+      </v-card-text>
 
-        <v-card-subtitle>
-            1,000 miles of wonder
-        </v-card-subtitle>
-
-        <v-card-actions>
-        <v-btn
-            color="orange-lighten-2"
-            text="Explore"
-        ></v-btn>
-
-        <v-spacer></v-spacer>
-
-        <v-btn
-            :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-            @click="show = !show"
-        ></v-btn>
-        </v-card-actions>
-
-        <v-expand-transition>
-        <div v-show="show">
-            <v-divider></v-divider>
-
-            <v-card-text>
-                I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
-            </v-card-text>
-        </div>
-        </v-expand-transition>
+      <v-card-actions>
+        <v-list-item class="w-100">
+          <template v-slot:append>
+            <div class="justify-self-end">
+              <v-btn icon="mdi-heart-outline"></v-btn>
+              <span class="me-2">{{ likeCount }}</span>
+              <v-btn @click="showComments = !showComments" icon="mdi-comment-text-outline"></v-btn>
+              <span class="">{{ commentCount }}</span>
+            </div>
+          </template>
+        </v-list-item>
+      </v-card-actions>
     </v-card>
+  </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+import {ref} from "vue";
 
-    const show = ref(false)
+defineProps({
+  authorName: String,
+  authorStatus: String,
+  authorAvatarUrl: String,
+  content: String,
+  likeCount: Number,
+  commentCount: Number,
+})
 
+const showComments = ref(false)
 </script>
