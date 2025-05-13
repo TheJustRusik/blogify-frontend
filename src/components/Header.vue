@@ -3,13 +3,14 @@ import RotatingCube from "@/components/RotatingCube.vue";
 import {useTheme} from 'vuetify'
 import {ref, onMounted} from "vue";
 import api from "../Api.js";
+import BlogCreator from "@/components/BlogCreator.vue";
 
 const isAuthed = ref(false)
 const theme = useTheme()
 const themeButtonIcon = ref('mdi-weather-sunny')
 const password = ref("")
 const email = ref("")
-const nickname = ref("")
+const username = ref("")
 const status = ref("Nookie👉👈")
 const showPassword = ref("")
 const title = ref("Login")
@@ -36,27 +37,50 @@ function changeAuth() {
 }
 
 async function loginOrRegister() {
-  if (isLogin) {
-    const response = await api.post("/auth/login", {
+  if (isLogin.value) {
+    login()
+  } else {
+    const respone = await api.post("/auth/register", {
       email: email.value,
       password: password.value,
+      username: username.value,
     })
-    const data = response.data
-    console.log(data)
-    localStorage.setItem("token", data.token)
-  } else {
-
+    if (respone.status === 200) {
+      console.log("Success registration")
+      await login()
+    }
   }
 
 }
 
-const username = ref("")
-const statuss = ref("")
-onMounted(() => {
-  username.value = localStorage.getItem('userName');
-  statuss.value = localStorage.getItem('status');
+async function login() {
+  const response = await api.post("/auth/login", {
+    email: email.value,
+    password: password.value,
+  })
+  const data = response.data
+  console.log(data)
+  if (data.accessToken) {
+    localStorage.setItem("token", data.accessToken)
+    localStorage.setItem("email", email.value)
+    const profile = await api.get("/user/me")
+    console.log(profile.data)
+    username.value = profile.data.username
+    localStorage.setItem("username", username.value)
+    isAuthed.value = true
+  }
+}
 
-  if (localStorage.getItem('userName')) {
+function logout() {
+  localStorage.clear()
+  isAuthed.value = false
+}
+
+onMounted(() => {
+  email.value = localStorage.getItem('email');
+  username.value = localStorage.getItem('username');
+
+  if (localStorage.getItem('token')) {
     isAuthed.value = true
     console.log("You authed")
   }
@@ -74,16 +98,23 @@ onMounted(() => {
         </div>
       </div>
       <div class="flex items-center gap-x-2">
-        <v-btn variant="outlined" prepend-icon="mdi-package-variant-closed-plus" size="large">Create blog</v-btn>
+        <BlogCreator></BlogCreator>
+
         <div v-if="isAuthed" class="flex items-center">
           <v-avatar
               color="surface-variant"
               :image="'https://api.dicebear.com/8.x/adventurer/svg?seed=' + username"
           ></v-avatar>
-          <div>
-              <div>{{ username }}</div>
-              <div>{{ statuss }}</div>
+          <div class="ml-2 ">
+            <div class="text-lg">{{ username }}</div>
+            <div class="text-sm">{{ email }}</div>
           </div>
+          <v-btn
+              class="ml-2"
+              variant="flat"
+              icon="mdi-logout"
+              @click="logout"
+          ></v-btn>
         </div>
 
         <v-dialog
@@ -116,7 +147,7 @@ onMounted(() => {
                   variant="underlined"
                   prepend-inner-icon="mdi-account"
                   class="mx-4"
-                  v-model="nickname"
+                  v-model="username"
                   :rules="[rules.required]"
                   label="Name"
               ></v-text-field>

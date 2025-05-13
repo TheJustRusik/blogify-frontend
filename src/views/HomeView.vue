@@ -2,6 +2,7 @@
   <main class="max-w-screen-lg mx-auto mt-2 space-y-2">
     <Blog
         v-for="blog in blogs"
+        :blog-id="blog.id"
         :author-name="users[blog.ownerId].username"
         :author-status="users[blog.ownerId].status"
         :content="blog.content"
@@ -17,6 +18,7 @@
 import Blog from '@/components/Blog.vue';
 import api from '../Api.js'
 import {ref, onMounted} from "vue";
+import {emitter} from "@/Emitter.js";
 
 const blogs = ref([]);
 const users = ref({});
@@ -30,6 +32,11 @@ async function loadUsers(ids) {
   }
 }
 
+emitter.on("update-blogs", () => {
+      loadBlogs()
+    }
+)
+
 const loadBlogs = async () => {
   try {
     const response = await api.get('/blog', {
@@ -41,10 +48,14 @@ const loadBlogs = async () => {
       }
     })
     blogs.value = response.data
+    console.log(blogs.value)
 
     let userIds = []
     for (let blog of response.data) {
-      userIds.push(blog.ownerId)
+      if (!userIds.includes(blog.ownerId)) {
+        userIds.push(blog.ownerId)
+      }
+
     }
     console.log(userIds)
     loadUsers(userIds)
