@@ -44,7 +44,7 @@ const loadBlogs = async () => {
         pageNum: 0,
         pageSize: 10,
         criteria: 'LIKE',
-        direction: 'ASC'
+        direction: 'DESC'
       }
     })
     blogs.value = response.data

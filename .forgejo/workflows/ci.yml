@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: docker
+    container:
+      image: thejustrusik/super-image:latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Build
+        run: npm run build
+
+      - name: Build & Push image
+        uses: https://github.com/elgohr/Publish-Docker-Github-Action@v5
+        with:
+          registry: git.kenuki.dev
+          name: blogify/blogify-front
+          username: ${{ secrets.PACKAGE_USERNAME }}
+          password: ${{ secrets.PACKAGE_PASSWORD }}
