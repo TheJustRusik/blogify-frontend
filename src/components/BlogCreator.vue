@@ -19,7 +19,7 @@ async function postBlog() {
 </script>
 
 <template>
-  <v-dialog v-model="isDialogActive" width="400px">
+  <v-dialog max-width="500" v-model="isDialogActive" >
     <template v-slot:activator="{ props: activatorProps }">
       <v-btn
           variant="outlined"
@@ -31,7 +31,7 @@ async function postBlog() {
       </v-btn>
     </template>
 
-    <v-card width="500">
+    <v-card >
       <v-toolbar title="Create blog"></v-toolbar>
 
       <v-textarea label="Blog" variant="solo-filled" v-model="content"></v-textarea>

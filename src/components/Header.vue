@@ -96,15 +96,17 @@ onMounted(() => {
 <template>
   <header class="max-w-screen-lg mx-auto">
     <div class="flex justify-between items-center">
-      <div class="flex justify-center items-center">
+      <div class="md:flex justify-center items-center">
         <RotatingCube/>
-        <div>
-          <h1 class="text-4xl text-primary">Blogify</h1>
-          <span class="text-secondary">by TheJustRusik</span>
+        <div class="text-center md:text-left">
+          <h1 class="text-lg md:text-4xl text-primary">Blogify</h1>
+          <span class="hidden md:block text-sm text-secondary">by TheJustRusik</span>
         </div>
       </div>
-      <div class="flex items-center gap-x-2">
+      <div class="md:flex items-center gap-x-2">
+        <div>
         <BlogCreator></BlogCreator>
+        </div>
 
         <div v-if="isAuthed" class="flex items-center">
           <v-avatar
@@ -113,7 +115,7 @@ onMounted(() => {
           ></v-avatar>
           <div class="ml-2 ">
             <div class="text-lg">{{ username }}</div>
-            <div class="text-sm">{{ email }}</div>
+            <div class="hidden sm:block text-sm">{{ email }}</div>
           </div>
           <v-btn
               class="ml-2"
@@ -125,7 +127,7 @@ onMounted(() => {
 
         <v-dialog
             v-if="!isAuthed"
-            width="auto"
+            max-width="500"
         >
           <template v-slot:activator="{ props: activatorProps }">
             <v-btn
@@ -137,10 +139,11 @@ onMounted(() => {
             </v-btn>
           </template>
           <template v-slot:default="{ isActive }">
-            <v-card width="500">
+            <v-card>
               <v-toolbar :title="title"></v-toolbar>
 
               <v-text-field
+
                   variant="underlined"
                   prepend-inner-icon="mdi-email-outline"
                   class="mx-4 mt-5"
@@ -192,7 +195,10 @@ onMounted(() => {
             </v-card>
           </template>
         </v-dialog>
-        <v-btn variant="flat" :icon="themeButtonIcon" @click="toggleTheme"/>
+        <div class="hidden md:block">
+
+          <v-btn  variant="flat" :icon="themeButtonIcon" @click="toggleTheme"/>
+        </div>
       </div>
     </div>
   </header>
