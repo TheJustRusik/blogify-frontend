@@ -1,16 +1,19 @@
 <template>
-  <main class="max-w-screen-lg mx-auto mt-2 space-y-2">
-    <Blog
-        v-for="blog in blogs"
-        :blog-id="blog.id"
-        :author-name="users[blog.ownerId].username"
-        :author-status="users[blog.ownerId].status"
-        :content="blog.content"
-        :like-count="blog.likeCount"
-        :comment-count="blog.commentCount"
-        :author-avatar-url="'https://api.dicebear.com/8.x/adventurer/svg?seed=' + users[blog.ownerId].username"
-        class="mb-2"
-    />
+  <main class="  mt-2 space-y-2">
+    <v-infinite-scroll :items="blogs" @load="loadBlogs" class="">
+      <Blog
+          v-for="blog in blogs"
+          :key="blog.id"
+          :blog-id="blog.id"
+          :author-name="users[blog.ownerId]?.username || '...' "
+          :author-status="users[blog.ownerId]?.status || ''"
+          :content="blog.content"
+          :like-count="blog.likeCount"
+          :comment-count="blog.commentCount"
+          :author-avatar-url="'https://api.dicebear.com/8.x/adventurer/svg?seed=' + (users[blog.ownerId]?.username || '')"
+          class="mb-2 max-w-screen-lg mx-auto w-full"
+      />
+    </v-infinite-scroll>
   </main>
 </template>
 
@@ -21,6 +24,7 @@ import {ref, onMounted} from "vue";
 import {emitter} from "@/Emitter.js";
 
 const blogs = ref([]);
+const page = ref(0)
 const users = ref({});
 
 async function loadUsers(ids) {
@@ -28,45 +32,54 @@ async function loadUsers(ids) {
   const data = response.data;
 
   for (let user of data) {
+    console.log("loadUsers");
     users.value[user.id] = user;
   }
 }
 
-emitter.on("update-blogs", () => {
-      loadBlogs()
+emitter.on("create-blog", (content) => {
+      console.log("create-blog", content);
+      blogs.value.unshift(content)
+      loadUsers(Array.of(content.ownerId));
     }
 )
 
-const loadBlogs = async () => {
+async function loadBlogs({done}) {
+  console.log("loadBlogs");
   try {
     const response = await api.get('/blog', {
       params: {
-        pageNum: 0,
+        pageNum: page.value,
         pageSize: 10,
         criteria: 'LIKE',
         direction: 'DESC'
       }
     })
-    blogs.value = response.data
+    page.value++;
+    if (response.data.length > 0) {
+      blogs.value.push(...response.data)
+      done('ok')
+    } else {
+      done('empty')
+    }
     console.log(blogs.value)
 
     let userIds = []
     for (let blog of response.data) {
+      console.log("RESPONSE DATA")
       if (!userIds.includes(blog.ownerId)) {
         userIds.push(blog.ownerId)
       }
 
     }
     console.log(userIds)
-    loadUsers(userIds)
+    await loadUsers(userIds)
   } catch (error) {
     console.error('Ошибка при загрузке блогов:', error)
   }
+
 }
 
-onMounted(() => {
-  loadBlogs()
-})
 
 </script>
 

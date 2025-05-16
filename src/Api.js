@@ -1,8 +1,9 @@
 import axios from 'axios';
+import {emitter} from "@/Emitter.js";
 
 // Создаём инстанс axios
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'https://blogify.kenuki.dev/api',
 });
 
 // Добавляем токен в каждый запрос
@@ -18,13 +19,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            // Удаляем токен
-            localStorage.removeItem('token');
 
+        if (error.response && error.response.status === 401) {
+            emitter.emit("logout");
         }
         return Promise.reject(error);
     }
+
 );
 
 export default api;

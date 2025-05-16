@@ -4,6 +4,7 @@ import {useTheme} from 'vuetify'
 import {ref, onMounted} from "vue";
 import api from "../Api.js";
 import BlogCreator from "@/components/BlogCreator.vue";
+import {emitter} from "@/Emitter.js";
 
 const isAuthed = ref(false)
 const theme = useTheme()
@@ -70,6 +71,11 @@ async function login() {
     isAuthed.value = true
   }
 }
+
+emitter.on("logout", () => {
+  alert("logout")
+  logout()
+})
 
 function logout() {
   localStorage.clear()

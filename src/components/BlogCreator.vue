@@ -11,7 +11,7 @@ async function postBlog() {
     content: content.value,
   })
   if (response.data.content === content.value) {
-    emitter.emit("update-blogs")
+    emitter.emit("create-blog", response.data)
     isDialogActive.value = false // Закрыть модалку
     content.value = "" // Очистить форму, по желанию
   }
