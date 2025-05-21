@@ -27,3 +27,6 @@ jobs:
           name: blogify/blogify-front
           username: ${{ secrets.PACKAGE_USERNAME }}
           password: ${{ secrets.PACKAGE_PASSWORD }}
+      
+      - name: Deploy
+        run: ${{ secrets.DEPLOY_COMMAND }}
