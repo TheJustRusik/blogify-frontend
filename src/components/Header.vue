@@ -122,6 +122,7 @@ onMounted(() => {
               variant="flat"
               icon="mdi-logout"
               @click="logout"
+              data-umami-event="Logout button"
           ></v-btn>
         </div>
 
@@ -135,6 +136,7 @@ onMounted(() => {
                 variant="outlined"
                 prepend-icon="mdi-login"
                 v-bind="activatorProps"
+                data-umami-event="Login button"
             >Login <span class="text-primary">/</span> Register
             </v-btn>
           </template>
@@ -190,6 +192,7 @@ onMounted(() => {
                     class="bg-primary"
                     :text="title"
                     @click="loginOrRegister"
+                    :data-umami-event="title + ' button'"
                 ></v-btn>
               </v-card-actions>
             </v-card>
@@ -197,7 +200,7 @@ onMounted(() => {
         </v-dialog>
         <div class="hidden md:block">
 
-          <v-btn  variant="flat" :icon="themeButtonIcon" @click="toggleTheme"/>
+          <v-btn  variant="flat" :icon="themeButtonIcon" @click="toggleTheme" data-umami-event="Change theme button"/>
         </div>
       </div>
     </div>

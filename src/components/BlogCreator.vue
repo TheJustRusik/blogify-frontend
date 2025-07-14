@@ -26,6 +26,7 @@ async function postBlog() {
           prepend-icon="mdi-package-variant-closed-plus"
           size="large"
           v-bind="activatorProps"
+          data-umami-event="Blog create button"
       >
         Create blog
       </v-btn>
@@ -37,8 +38,8 @@ async function postBlog() {
       <v-textarea label="Blog" variant="solo-filled" v-model="content"></v-textarea>
 
       <v-card-actions class="justify-end">
-        <v-btn text="Cancel" @click="isDialogActive = false"></v-btn>
-        <v-btn class="bg-primary" text="POST!" @click="postBlog"></v-btn>
+        <v-btn text="Cancel" @click="isDialogActive = false" data-umami-event="Blog create-cancel button"></v-btn>
+        <v-btn class="bg-primary" text="POST!" @click="postBlog" data-umami-event="Blog create-create button"></v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

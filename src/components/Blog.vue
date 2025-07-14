@@ -21,9 +21,9 @@
         <v-list-item class="w-100">
           <template v-slot:append>
             <div class="justify-self-end">
-              <v-btn :icon="likeButtonIcon" @click="like"></v-btn>
+              <v-btn :icon="likeButtonIcon" @click="like" data-umami-event="Blog like button"></v-btn>
               <span class="me-2">{{ localLikeCount }}</span>
-              <v-btn @click="showComments = !showComments" icon="mdi-comment-text-outline"></v-btn>
+              <v-btn @click="showComments = !showComments" icon="mdi-comment-text-outline" data-umami-event="Blog comment button"></v-btn>
               <span class="">{{ commentCount }}</span>
             </div>
           </template>
